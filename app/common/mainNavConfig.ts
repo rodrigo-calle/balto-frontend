@@ -9,13 +9,13 @@ type MainNavConfig = {
 }[];
 export const mainNavConfig: MainNavConfig = [
   {
-    title: "Home",
-    href: "/",
+    title: "Login",
+    href: "/auth/login",
     privileges: Privileges.all,
   },
   {
-    title: "About",
-    href: "/about",
+    title: "Register",
+    href: "/auth/register",
     privileges: Privileges.all,
   },
   {
