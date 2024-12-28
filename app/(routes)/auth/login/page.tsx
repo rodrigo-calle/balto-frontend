@@ -13,6 +13,16 @@ import {
 } from "@/_components/ui/form";
 import { Input } from "@/_components/ui/input";
 import { Button } from "@/_components/ui/button";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const loginUserSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
@@ -22,6 +32,7 @@ const loginUserSchema = z.object({
 });
 
 export default function Login() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof loginUserSchema>>({
     resolver: ZodResolver(loginUserSchema),
     defaultValues: {
@@ -29,7 +40,7 @@ export default function Login() {
       password: "",
     },
   });
-
+  const authLoginStore = useAuthStore((state) => state.logIn);
   const { mutate: loginUser, isError, error } = useLoginUser();
 
   if (isError) {
@@ -39,9 +50,10 @@ export default function Login() {
   const onSubmit = (data: z.infer<typeof loginUserSchema>) => {
     console.log({ data });
     loginUser(data, {
-      onSuccess: () => {
+      onSuccess: (d) => {
+        authLoginStore(d);
         form.reset();
-        alert("User logged in successfully");
+        router.push("/dashboard");
       },
       onError: (error: Error) => {
         // TODO: handle error
@@ -51,41 +63,52 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col gap-4 w-3/6 mx-auto">
-      <h1 className="text-2xl font-bold">Login</h1>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="Email" {...field} />
-                </FormControl>
-                <FormDescription>your email</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="Password" {...field} type="password" />
-                </FormControl>
-                <FormDescription>
-                  your password, must be at least 6 characters
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit">Submit</Button>
-        </form>
-      </Form>
-    </div>
+    <Card className="w-[350px] mx-auto mt-20">
+      <CardHeader>
+        <CardTitle className="text-1xl font-bold text-center">
+          Login to your Balto account
+        </CardTitle>
+        <CardDescription>Login with your email and password.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Email" {...field} />
+                  </FormControl>
+                  <FormDescription>your email</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Password" {...field} type="password" />
+                  </FormControl>
+                  <FormDescription>
+                    your password
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <p className="text-sm">Don&apos;t have an account?</p>
+        <Button onClick={() => router.push("/auth/register")} variant="link">Register</Button>
+      </CardFooter>
+    </Card>
   );
 }
