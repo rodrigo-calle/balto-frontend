@@ -13,7 +13,7 @@ import {
 } from "@/_components/ui/form";
 import { Input } from "@/_components/ui/input";
 import { Button } from "@/_components/ui/button";
-import { useAuthStore } from "@/store";
+import { useAuthStore } from "@/_store";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -23,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useValidateToken } from "@/_hooks/auth/useValidateToken";
 
 const newUserSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -43,6 +44,11 @@ export default function Register() {
   });
   const authLoginStore = useAuthStore((state) => state.logIn);
   const { mutate: createUser, isError, error } = useCreateUser();
+  const { isAuthValidated } = useValidateToken();
+
+  if (isAuthValidated) {
+    return null;
+  }
 
   if (isError) {
     return <p>{error.message}</p>;

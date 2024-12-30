@@ -4,11 +4,61 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { mainNavConfig } from "@/common/mainNavConfig";
 import { useEffect, useState } from "react";
+import { useAuthStore } from "@/_store";
+import { UserWithToken } from "@/_types";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdownMenu";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+
+type MainNavMenuProps = {
+  user: Omit<UserWithToken, "token"> | null;
+  logOut: () => void;
+};
+function MainNavMenu(props: MainNavMenuProps) {
+  const { user, logOut } = props;
+  const handleLogOut = () => {
+    logOut();
+    window.location.href = "/";
+  };
+  if (user) {
+    return (
+      <div className="flex gap-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="cursor-pointer">
+              <AvatarImage src="https://github.com/shadcn.png" />
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56 ">
+            <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogOut}>Log out</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  }
+  return (
+    <div className="flex gap-2">
+      <Link href="/auth/login">
+        <Button variant="outline">Sign In</Button>
+      </Link>
+      <Link href="/auth/register">
+        <Button>Register</Button>
+      </Link>
+    </div>
+  );
+}
 
 export default function MainNav() {
   const [navList, setNavList] = useState(mainNavConfig);
-  const user = false;
-
+  const { user, logOut } = useAuthStore();
   useEffect(() => {
     if (user) {
       const navAuthList = mainNavConfig.filter(
@@ -25,7 +75,6 @@ export default function MainNav() {
     setNavList(navAllList);
   }, [user]);
 
-  // TODO: Check if user is logged in
   return (
     <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6 border-b">
       <Sheet>
@@ -58,16 +107,7 @@ export default function MainNav() {
           <h1 className="text-2xl font-bold">Year of 12 Weeks</h1>
         </Link>
         <nav className="ml-auto hidden lg:flex gap-6">
-          {navList.map((item) => (
-            <Link
-              href={item.href}
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
-              prefetch={false}
-              key={item.href}
-            >
-              {item.title}
-            </Link>
-          ))}
+          <MainNavMenu user={user} logOut={logOut} />
         </nav>
       </div>
     </header>

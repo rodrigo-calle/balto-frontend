@@ -14,7 +14,7 @@ import {
 import { Input } from "@/_components/ui/input";
 import { Button } from "@/_components/ui/button";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store";
+import { useAuthStore } from "@/_store";
 import {
   Card,
   CardContent,
@@ -23,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useValidateToken } from "@/_hooks/auth/useValidateToken";
 
 const loginUserSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
@@ -42,13 +43,17 @@ export default function Login() {
   });
   const authLoginStore = useAuthStore((state) => state.logIn);
   const { mutate: loginUser, isError, error } = useLoginUser();
+  const { isAuthValidated } = useValidateToken();
+
+  if (isAuthValidated) {
+    return null;
+  }
 
   if (isError) {
     return <p>{error.message}</p>;
   }
 
   const onSubmit = (data: z.infer<typeof loginUserSchema>) => {
-    console.log({ data });
     loginUser(data, {
       onSuccess: (d) => {
         authLoginStore(d);
@@ -94,9 +99,7 @@ export default function Login() {
                   <FormControl>
                     <Input placeholder="Password" {...field} type="password" />
                   </FormControl>
-                  <FormDescription>
-                    your password
-                  </FormDescription>
+                  <FormDescription>your password</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -107,7 +110,9 @@ export default function Login() {
       </CardContent>
       <CardFooter className="flex justify-between">
         <p className="text-sm">Don&apos;t have an account?</p>
-        <Button onClick={() => router.push("/auth/register")} variant="link">Register</Button>
+        <Button onClick={() => router.push("/auth/register")} variant="link">
+          Register
+        </Button>
       </CardFooter>
     </Card>
   );
