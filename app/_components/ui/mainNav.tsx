@@ -75,6 +75,8 @@ export default function MainNav() {
     setNavList(navAllList);
   }, [user]);
 
+  if (user) return null;
+
   return (
     <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6 border-b">
       <Sheet>
