@@ -23,6 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { Calendar } from "@/_components/ui/calendar";
+import { useAuthStore } from "@/_store";
 
 const newGoalSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
@@ -41,21 +42,30 @@ export default function NewGoal() {
     },
     resolver: ZodResolver(newGoalSchema),
   });
-
+  const user = useAuthStore((state) => state.user);
   const { mutate: createGoal, isError, error } = useCreateGoal();
 
-  if (isError) {
+  if (isError && error) {
     return <p>{error.message}</p>;
   }
 
+  if (!user) {
+    return <p>Loading...</p>;
+  }
+
   const onSubmit = (data: z.infer<typeof newGoalSchema>) => {
-    console.log({ data });
-    createGoal(data, {
-      onSuccess: () => {
-        form.reset();
-        alert("Goal created successfully");
+    createGoal(
+      {
+        goal: data,
+        userToken: user.token!,
       },
-    });
+      {
+        onSuccess: () => {
+          form.reset();
+          alert("Goal created successfully");
+        },
+      }
+    );
   };
   return (
     <div className="flex flex-col gap-4 w-3/6 mx-auto">

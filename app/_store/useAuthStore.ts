@@ -5,7 +5,7 @@ import { setCookie, removeCookie } from "typescript-cookie";
 import { addHours } from "date-fns";
 
 export type State = {
-  user: Omit<UserWithToken, "token"> | null;
+  user: UserWithToken | null;
   isAuthValidated: boolean;
 };
 

@@ -5,8 +5,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 export function useCreateGoal() {
   const queryClient = useQueryClient();
 
-  return useMutation<Goal, Error, NewGoal, unknown>({
-    mutationFn: (newGoal) => createGoal(newGoal),
+  return useMutation<
+    Goal,
+    Error,
+    {
+      goal: NewGoal;
+      userToken: string;
+    },
+    unknown
+  >({
+    mutationFn: (newGoal) => createGoal(newGoal.goal, newGoal.userToken),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["goals"] });
     },
