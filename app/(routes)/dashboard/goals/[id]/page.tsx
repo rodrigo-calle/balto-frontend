@@ -14,7 +14,6 @@ export default function Goals() {
     user?.token ?? "",
     goalId
   );
-  console.log(data);
   if (error || isError || !data) {
     return <div>{`${error}`}</div>;
   }

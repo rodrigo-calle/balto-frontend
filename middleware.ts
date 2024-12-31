@@ -16,9 +16,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
+  if (authToken && request.nextUrl.pathname === "/") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/register"], // Todas las rutas deben empezar con "/"
+  matcher: ["/dashboard/:path*", "/login", "/register", "/"],
 };
