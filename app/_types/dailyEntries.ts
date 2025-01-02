@@ -1,10 +1,21 @@
-export type DailyEntry = {
-  id: number;
-  weekId: number;
-  date: Date;
-  progress: number;
-  challenges: string;
+export type DailyEntryObjectives = {
+  id: string;
+  dailyEntryId: string;
+  objective: string;
+  isCompleted: boolean;
+  description: string;
 };
 
-export type NewDailyEntry = Omit<DailyEntry, "id">;
-export type UpdateDailyEntry = Partial<DailyEntry>;
+export type NewDailyEntryGoal = Omit<DailyEntryObjectives, "id">;
+
+export type DailyEntry = {
+  id: string;
+  weekId: string;
+  date: Date;
+  progress: string;
+  notes: string;
+  DailyEntryObjectives: DailyEntryObjectives[];
+};
+
+export type NewDailyEntry = Omit<DailyEntry, "id" | "DailyEntryObjectives">;
+export type UpdateDailyEntry = Partial<NewDailyEntry>;
