@@ -9,7 +9,6 @@ export async function getWeek(id: string, token: string) {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log({ response });
     return response.data;
   } catch (error) {
     throw error;

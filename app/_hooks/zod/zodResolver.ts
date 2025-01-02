@@ -4,8 +4,6 @@ export const ZodResolver = (schema: any) => {
   return async (values: any) => {
     try {
       const parsedValues = await schema.parseAsync(values);
-      console.log({ parsedValues });
-
       return {
         values: parsedValues,
         errors: {},

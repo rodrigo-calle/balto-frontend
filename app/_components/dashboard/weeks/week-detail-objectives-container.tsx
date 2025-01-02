@@ -7,7 +7,6 @@ import {
 import { Week } from "@/_types";
 import WeekleGoalDialogForm from "./dialogForms/addWeekleGoalDialog";
 import { Goal } from "lucide-react";
-import AddDailyGoalDialog from "../daily/dialogForm/addDailyGoalDialog";
 
 type Props = {
   week: Week;
@@ -32,7 +31,6 @@ export default function WeekDetailCardObjectives(props: Props) {
               <li className="my-2 first-letter:uppercase">
                 {objective.objective}
               </li>
-              <AddDailyGoalDialog dailyEntryId={week.id} />
             </div>
           ))}
         </ul>

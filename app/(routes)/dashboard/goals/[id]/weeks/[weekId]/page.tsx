@@ -32,7 +32,6 @@ export default function WeekPage() {
     return <div>Loading...</div>;
   }
 
-  console.log({ goal });
   return (
     <>
       <WeekDetailCardHeader week={week} goalTitle={goal.title} />

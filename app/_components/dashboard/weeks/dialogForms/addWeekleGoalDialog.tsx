@@ -51,7 +51,6 @@ export default function WeekleGoalDialogForm(props: Props) {
   const onSubmit = (data: z.infer<typeof newWeekleGoalSchema>) => {
     createWeekleObjective(data);
     form.reset();
-    console.log("finish refetch");
     window.location.reload();
   };
 

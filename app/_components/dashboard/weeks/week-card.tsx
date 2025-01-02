@@ -23,7 +23,7 @@ export default function WeekCard(props: WeekCardProps) {
   const navigationHandler = () => {
     router.push(`/dashboard/goals/${week.goalId}/weeks/${week.id}`);
   };
-  console.log({ x: week.WeeklyObjectives.length });
+
   return (
     <Card className="w-72 h-72">
       <CardHeader>
