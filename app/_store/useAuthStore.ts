@@ -27,9 +27,9 @@ export const useAuthStore = create<State & AuthStoreActions>()(
       logIn: (user: UserWithToken) => {
         set({ user });
         setCookie("auth_token", user.token, {
-          domain: "localhost",
+          domain: "balto-frontend-lyart.vercel.app",
           sameSite: "lax",
-          secure: false,
+          secure: true,
           path: "/",
           expires: addHours(new Date(), 24),
         });
@@ -41,9 +41,9 @@ export const useAuthStore = create<State & AuthStoreActions>()(
         const token = getCookie("auth_token");
         if (token) {
           removeCookie("auth_token", {
-            domain: "localhost",
+            domain: "balto-frontend-lyart.vercel.app",
             sameSite: "lax",
-            secure: false,
+            secure: true,
             path: "/",
           });
         }
