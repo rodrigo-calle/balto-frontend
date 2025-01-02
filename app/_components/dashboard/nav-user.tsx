@@ -20,10 +20,12 @@ import {
 import { UserWithToken } from "@/_types";
 import { useEffect, useState } from "react";
 import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
+import { useAuthStore } from "@/_store";
 
 export function NavUser({ user }: { user: Omit<UserWithToken, "token"> }) {
   const { isMobile } = useSidebar();
   const [nameInitials, setNameInitials] = useState("");
+  const logOut = useAuthStore((state) => state.logOut);
 
   useEffect(() => {
     if (!user) return;
@@ -33,6 +35,10 @@ export function NavUser({ user }: { user: Omit<UserWithToken, "token"> }) {
       .join("");
     setNameInitials(nameInitials);
   }, [user]);
+
+  const handleLogout = () => {
+    logOut();
+  };
 
   return (
     <SidebarMenu>
@@ -84,7 +90,7 @@ export function NavUser({ user }: { user: Omit<UserWithToken, "token"> }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

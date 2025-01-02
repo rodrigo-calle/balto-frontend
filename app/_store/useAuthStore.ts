@@ -1,7 +1,8 @@
+"use client";
 import { UserWithToken } from "@/_types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { setCookie, removeCookie } from "typescript-cookie";
+import { setCookie, removeCookie, getCookie } from "typescript-cookie";
 import { addHours } from "date-fns";
 
 export type State = {
@@ -33,22 +34,28 @@ export const useAuthStore = create<State & AuthStoreActions>()(
           expires: addHours(new Date(), 24),
         });
       },
+
       logOut: () => {
         set({ user: null });
         set({ isAuthValidated: false });
-        removeCookie("auth_token", {
-          domain: "localhost",
-          sameSite: "lax",
-          secure: false,
-          path: "/",
-        });
+        const token = getCookie("auth_token");
+        if (token) {
+          removeCookie("auth_token", {
+            domain: "localhost",
+            sameSite: "lax",
+            secure: false,
+            path: "/",
+          });
+        }
       },
     }),
     {
-      name: "auth-storage",
+      name: "auth_token",
       partialize: (state) => ({
         user: state.user,
         isAuthValidated: state.isAuthValidated,
+        logIn: state.logIn,
+        logOut: state.logOut,
       }),
     }
   )

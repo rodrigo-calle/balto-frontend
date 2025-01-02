@@ -5,6 +5,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { usePathname } from "next/navigation";
 
 const pathGoalsWithUuid = /^\/dashboard\/goals\/[0-9a-fA-F-]{36}$/;
 const getBreadcrumbPath = (path: string) => {
@@ -99,7 +100,7 @@ const getBreadcrumbPath = (path: string) => {
 };
 
 export default function BreadcrumbRoutes() {
-  const router = window.location.pathname;
+  const router = usePathname();
 
   const breadcrumb = getBreadcrumbPath(router);
 

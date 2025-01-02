@@ -22,6 +22,7 @@ type MainNavMenuProps = {
 };
 function MainNavMenu(props: MainNavMenuProps) {
   const { user, logOut } = props;
+
   const handleLogOut = () => {
     logOut();
     window.location.href = "/";
@@ -58,7 +59,8 @@ function MainNavMenu(props: MainNavMenuProps) {
 
 export default function MainNav() {
   const [navList, setNavList] = useState(mainNavConfig);
-  const { user, logOut } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const logOut = useAuthStore((state) => state.logOut);
   useEffect(() => {
     if (user) {
       const navAuthList = mainNavConfig.filter(

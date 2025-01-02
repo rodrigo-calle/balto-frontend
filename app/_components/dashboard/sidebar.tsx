@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import { DogIcon, ShapesIcon, Goal } from "lucide-react";
 
@@ -16,6 +15,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/_store";
+import { useRouter } from "next/navigation";
 
 const data = {
   user: {
@@ -51,10 +51,18 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, logOut } = useAuthStore();
+  const router = useRouter();
+  const logOut = useAuthStore((state) => state.logOut);
+  const user = useAuthStore((state) => state.user);
+
+  React.useEffect(() => {
+    if (!user) {
+      logOut();
+      router.push("/");
+    }
+  }, [logOut, router, user]);
 
   if (!user) {
-    logOut();
     return null;
   }
 
@@ -82,7 +90,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={user!} />
       </SidebarFooter>
     </Sidebar>
   );
