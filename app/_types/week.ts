@@ -4,12 +4,23 @@ export type WeekleObjective = {
   objective: string;
 };
 
+export type NewWeekleObjective = Omit<WeekleObjective, "id">;
+export type UpdateWeekleObjective = Partial<NewWeekleObjective>;
+export type DailyEntryObjectives = {
+  id: string;
+  dailyEntryId: string;
+  objective: string;
+  isCompleted: boolean;
+  description: string;
+};
+
 export type DailyEntry = {
   id: string;
   weekId: string;
   progress: number;
   notes: string;
   date: Date;
+  DailyEntryObjectives: DailyEntryObjectives[];
 };
 
 export type Week = {
