@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/_store";
 import { useRouter } from "next/navigation";
+import { useValidateToken } from "@/_hooks/auth/useValidateToken";
 
 const data = {
   user: {
@@ -53,7 +54,7 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
   const logOut = useAuthStore((state) => state.logOut);
-  const user = useAuthStore((state) => state.user);
+  const { user } = useValidateToken();
 
   React.useEffect(() => {
     if (!user) {

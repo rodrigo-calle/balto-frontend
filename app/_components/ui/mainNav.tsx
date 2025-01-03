@@ -15,6 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdownMenu";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { useValidateToken } from "@/_hooks/auth/useValidateToken";
+import { useRouter } from "next/navigation";
 
 type MainNavMenuProps = {
   user: Omit<UserWithToken, "token"> | null;
@@ -22,10 +24,11 @@ type MainNavMenuProps = {
 };
 function MainNavMenu(props: MainNavMenuProps) {
   const { user, logOut } = props;
+  const router = useRouter();
 
   const handleLogOut = () => {
     logOut();
-    window.location.href = "/";
+    router.push("/");
   };
   if (user) {
     return (
@@ -59,8 +62,9 @@ function MainNavMenu(props: MainNavMenuProps) {
 
 export default function MainNav() {
   const [navList, setNavList] = useState(mainNavConfig);
-  const user = useAuthStore((state) => state.user);
+  const { user } = useValidateToken();
   const logOut = useAuthStore((state) => state.logOut);
+
   useEffect(() => {
     if (user) {
       const navAuthList = mainNavConfig.filter(
@@ -69,11 +73,9 @@ export default function MainNav() {
       setNavList(navAuthList);
       return;
     }
-
     const navAllList = mainNavConfig.filter(
       (item) => item.privileges === "all"
     );
-
     setNavList(navAllList);
   }, [user]);
 

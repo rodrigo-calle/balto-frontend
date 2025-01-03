@@ -13,7 +13,7 @@ export type State = {
 export type AuthStoreActions = {
   logIn: (user: UserWithToken) => void;
   logOut: () => void;
-  validateToken: (val: boolean) => void;
+  validateToken: (val: boolean, user?: UserWithToken | null) => void;
 };
 
 export const useAuthStore = create<State & AuthStoreActions>()(
@@ -21,15 +21,16 @@ export const useAuthStore = create<State & AuthStoreActions>()(
     (set) => ({
       user: null,
       isAuthValidated: false,
-      validateToken: (val: boolean) => {
+      validateToken: (val: boolean, user?: UserWithToken | null) => {
         set({ isAuthValidated: val });
+        set({ user: val ? user : null });
       },
       logIn: (user: UserWithToken) => {
         set({ user });
         setCookie("auth_token", user.token, {
           domain: "balto-frontend-lyart.vercel.app",
-          sameSite: "lax",
           secure: true,
+          sameSite: "lax",
           path: "/",
           expires: addHours(new Date(), 24),
         });
@@ -42,8 +43,8 @@ export const useAuthStore = create<State & AuthStoreActions>()(
         if (token) {
           removeCookie("auth_token", {
             domain: "balto-frontend-lyart.vercel.app",
-            sameSite: "lax",
             secure: true,
+            sameSite: "lax",
             path: "/",
           });
         }
@@ -54,8 +55,6 @@ export const useAuthStore = create<State & AuthStoreActions>()(
       partialize: (state) => ({
         user: state.user,
         isAuthValidated: state.isAuthValidated,
-        logIn: state.logIn,
-        logOut: state.logOut,
       }),
     }
   )
