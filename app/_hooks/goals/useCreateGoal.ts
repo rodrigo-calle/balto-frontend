@@ -1,20 +1,20 @@
 import { createGoal } from "@/_services";
 import { Goal, NewGoal } from "@/_types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getCookie } from "typescript-cookie";
 
 export function useCreateGoal() {
   const queryClient = useQueryClient();
-
+  const token = typeof window !== "undefined" ? getCookie("auth_token") : null;
   return useMutation<
     Goal,
     Error,
     {
       goal: NewGoal;
-      userToken: string;
     },
     unknown
   >({
-    mutationFn: (newGoal) => createGoal(newGoal.goal, newGoal.userToken),
+    mutationFn: (newGoal) => createGoal(newGoal.goal, token!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["goals"] });
     },

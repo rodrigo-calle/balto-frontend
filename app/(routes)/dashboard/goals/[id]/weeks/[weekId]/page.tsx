@@ -22,7 +22,7 @@ export default function WeekPage() {
     data: goal,
     error: goalError,
     isError: goalIsError,
-  } = useGetGoal(user?.token ?? "", week?.goalId ?? "");
+  } = useGetGoal(week?.goalId ?? "");
 
   if (error || isError || !week || goalError || goalIsError || !goal) {
     return <div>{`${error}`}</div>;

@@ -55,6 +55,5 @@ export const useValidateToken = () => {
     router,
     validateToken,
   ]);
-
   return newState;
 };

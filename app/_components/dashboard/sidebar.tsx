@@ -14,8 +14,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useAuthStore } from "@/_store";
-import { useRouter } from "next/navigation";
 import { useValidateToken } from "@/_hooks/auth/useValidateToken";
 
 const data = {
@@ -52,16 +50,7 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const router = useRouter();
-  const logOut = useAuthStore((state) => state.logOut);
   const { user } = useValidateToken();
-
-  React.useEffect(() => {
-    if (!user) {
-      logOut();
-      router.push("/");
-    }
-  }, [logOut, router, user]);
 
   if (!user) {
     return null;

@@ -21,11 +21,13 @@ import { UserWithToken } from "@/_types";
 import { useEffect, useState } from "react";
 import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
 import { useAuthStore } from "@/_store";
+import { useRouter } from "next/navigation";
 
 export function NavUser({ user }: { user: Omit<UserWithToken, "token"> }) {
   const { isMobile } = useSidebar();
   const [nameInitials, setNameInitials] = useState("");
   const logOut = useAuthStore((state) => state.logOut);
+  const router = useRouter();
 
   useEffect(() => {
     if (!user) return;
@@ -38,6 +40,7 @@ export function NavUser({ user }: { user: Omit<UserWithToken, "token"> }) {
 
   const handleLogout = () => {
     logOut();
+    router.push("/");
   };
 
   return (

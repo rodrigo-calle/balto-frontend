@@ -1,19 +1,14 @@
 "use client";
 
 import { useGetGoal } from "@/_hooks/goals/useGetGoal";
-import { useAuthStore } from "@/_store";
 import { useParams } from "next/navigation";
 import GoalDetailCard from "@/_components/dashboard/goals/goal-detail-card";
 import WeekCard from "@/_components/dashboard/weeks/week-card";
 
 export default function Goals() {
   const up = useParams();
-  const user = useAuthStore((state) => state.user);
   const goalId = typeof up.id === "string" ? up.id : "";
-  const { data, error, isError, isLoading } = useGetGoal(
-    user?.token ?? "",
-    goalId
-  );
+  const { data, error, isError, isLoading } = useGetGoal(goalId);
   if (error || isError || !data) {
     return <div>{`${error}`}</div>;
   }

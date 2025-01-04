@@ -1,12 +1,10 @@
 "use client";
 
 import { useGetGoals } from "@/hooks/goals/useGetGoals";
-import { useAuthStore } from "@/_store";
 import GoalPageCard from "@/_components/dashboard/goals/goal-page-card";
 
 export default function Goals() {
-  const { user } = useAuthStore();
-  const { data, error } = useGetGoals(user?.token ?? "");
+  const { data, error } = useGetGoals();
 
   if (error && !data) {
     return <div>error</div>;

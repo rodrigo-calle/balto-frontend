@@ -57,7 +57,6 @@ export default function NewGoal() {
     createGoal(
       {
         goal: data,
-        userToken: user.token!,
       },
       {
         onSuccess: () => {
