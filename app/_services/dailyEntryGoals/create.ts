@@ -8,7 +8,7 @@ export async function createDailyEntryGoals(
 ): Promise<DailyEntryObjectives> {
   try {
     const response = await axios.post<DailyEntryObjectives>(
-      `${BASE_API_URL}/daily-entry-goals`,
+      `${BASE_API_URL}/daily-goals`,
       dailyEntryGoals,
       {
         headers: {
