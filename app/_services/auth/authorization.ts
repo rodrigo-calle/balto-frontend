@@ -12,7 +12,10 @@ export async function isAuthorized(token: string) {
         },
       }
     );
-    return response.data;
+    if (response.status === 200) {
+      return response.data;
+    }
+    throw new Error("Unauthorized");
   } catch (error) {
     throw error;
   }

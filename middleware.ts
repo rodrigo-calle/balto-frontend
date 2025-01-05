@@ -2,21 +2,24 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
   const authToken = request.cookies.get("auth_token")?.value;
+  const isProtectedRoute = request.nextUrl.pathname.startsWith("/dashboard");
+  const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
 
-  if (!authToken && request.nextUrl.pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/auth/login", request.url));
+  if (isProtectedRoute && !authToken) {
+    const url = new URL("/auth/login", request.url);
+    url.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(url);
   }
 
-  if (authToken && request.nextUrl.pathname.startsWith("/login")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  if (isAuthPage && authToken) {
+    const callbackUrl = request.nextUrl.searchParams.get("callbackUrl");
+    const redirectUrl = callbackUrl || "/dashboard";
+    return NextResponse.redirect(new URL(redirectUrl, request.url));
   }
 
-  if (authToken && request.nextUrl.pathname.startsWith("/register")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  if (authToken && request.nextUrl.pathname === "/") {
+  if (authToken && pathname === "/") {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
@@ -24,5 +27,12 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/register", "/"],
+  matcher: [
+    "/auth/:path*",
+    "/dashboard/:path*",
+    "/dashboard/goals/:id*",
+    "/dashboard/goals/:id/weeks/:weekId*",
+    "/profile/:path*",
+    "/",
+  ],
 };

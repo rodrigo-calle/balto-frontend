@@ -15,7 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdownMenu";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { useValidateToken } from "@/_hooks/auth/useValidateToken";
 import { useRouter } from "next/navigation";
 
 type MainNavMenuProps = {
@@ -62,8 +61,8 @@ function MainNavMenu(props: MainNavMenuProps) {
 
 export default function MainNav() {
   const [navList, setNavList] = useState(mainNavConfig);
-  const { user } = useValidateToken();
-  const logOut = useAuthStore((state) => state.logOut);
+  const userLogoutStore = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
     if (user) {
@@ -113,7 +112,7 @@ export default function MainNav() {
           <h1 className="text-2xl font-bold">Year of 12 Weeks</h1>
         </Link>
         <nav className="ml-auto hidden lg:flex gap-6">
-          <MainNavMenu user={user} logOut={logOut} />
+          <MainNavMenu user={user} logOut={userLogoutStore} />
         </nav>
       </div>
     </header>

@@ -26,7 +26,7 @@ import { useRouter } from "next/navigation";
 export function NavUser({ user }: { user: Omit<UserWithToken, "token"> }) {
   const { isMobile } = useSidebar();
   const [nameInitials, setNameInitials] = useState("");
-  const logOut = useAuthStore((state) => state.logOut);
+  const logountUserStore = useAuthStore((state) => state.logout);
   const router = useRouter();
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function NavUser({ user }: { user: Omit<UserWithToken, "token"> }) {
   }, [user]);
 
   const handleLogout = () => {
-    logOut();
+    logountUserStore();
     router.push("/");
   };
 

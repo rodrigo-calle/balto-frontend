@@ -1,60 +1,88 @@
 "use client";
-import { UserWithToken } from "@/_types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { QueryClient } from "@tanstack/react-query";
+import { UserWithToken } from "@/_types";
 import { setCookie, removeCookie, getCookie } from "typescript-cookie";
 import { addHours } from "date-fns";
+import { isAuthorized } from "@/_services/auth";
 
-export type State = {
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+    },
+  },
+});
+
+interface AuthState {
   user: UserWithToken | null;
-  isAuthValidated: boolean;
-};
+  token: string | null;
+  isAuthenticated: boolean;
+  login: (userAuthenticated: UserWithToken) => Promise<void>;
+  logout: () => void;
+  refreshToken: () => Promise<void>;
+}
 
-export type AuthStoreActions = {
-  logIn: (user: UserWithToken) => void;
-  logOut: () => void;
-  validateToken: (val: boolean, user?: UserWithToken | null) => void;
-};
-
-export const useAuthStore = create<State & AuthStoreActions>()(
+export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      isAuthValidated: false,
-      validateToken: (val: boolean, user?: UserWithToken | null) => {
-        set({ isAuthValidated: val });
-        set({ user: val ? user : null });
-      },
-      logIn: (user: UserWithToken) => {
-        set({ user });
-        setCookie("auth_token", user.token, {
-          domain: "balto-frontend-lyart.vercel.app",
-          secure: true,
-          sameSite: "lax",
-          path: "/",
-          expires: addHours(new Date(), 24),
-        });
-      },
-
-      logOut: () => {
-        set({ user: null });
-        set({ isAuthValidated: false });
-        const token = getCookie("auth_token");
-        if (token) {
-          removeCookie("auth_token", {
+      token: null,
+      isAuthenticated: false,
+      login: async (user: UserWithToken) => {
+        try {
+          setCookie("auth_token", user.token, {
             domain: "balto-frontend-lyart.vercel.app",
             secure: true,
             sameSite: "lax",
             path: "/",
+            expires: addHours(new Date(), 24),
           });
+          queryClient.invalidateQueries();
+
+          set({
+            user: user,
+            token: user.token,
+            isAuthenticated: true,
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      logout: () => {
+        removeCookie("auth_token", {
+          domain: "balto-frontend-lyart.vercel.app",
+          secure: true,
+          sameSite: "lax",
+          path: "/",
+        });
+
+        queryClient.clear();
+
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+        });
+      },
+      refreshToken: async () => {
+        try {
+          const token = getCookie("auth_token");
+          const user = await isAuthorized(token!);
+
+          set({ token: user.token });
+        } catch (error) {
+          console.error("Error refreshing token:", error);
+          useAuthStore.getState().logout();
         }
       },
     }),
     {
-      name: "auth_token",
+      name: "auth_storage",
       partialize: (state) => ({
         user: state.user,
-        isAuthValidated: state.isAuthValidated,
+        isAuthenticated: state.isAuthenticated,
       }),
     }
   )

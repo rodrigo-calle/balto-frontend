@@ -23,7 +23,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useValidateToken } from "@/_hooks/auth/useValidateToken";
 
 const newUserSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -42,22 +41,17 @@ export default function Register() {
       password: "",
     },
   });
-  const authLoginStore = useAuthStore((state) => state.logIn);
+  const loginUserStore = useAuthStore((state) => state.login);
   const { mutate: createUser, isError, error } = useCreateUser();
-  const { isAuthValidated } = useValidateToken();
-
-  if (isAuthValidated) {
-    return null;
-  }
 
   if (isError) {
     return <p>{error.message}</p>;
   }
 
-  const onSubmit = (data: z.infer<typeof newUserSchema>) => {
-    createUser(data, {
-      onSuccess: (d) => {
-        authLoginStore(d);
+  const onSubmit = (credentials: z.infer<typeof newUserSchema>) => {
+    createUser(credentials, {
+      onSuccess: (userData) => {
+        loginUserStore(userData);
         form.reset();
         router.push("/dashboard");
       },

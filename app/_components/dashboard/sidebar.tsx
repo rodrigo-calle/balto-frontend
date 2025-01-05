@@ -14,7 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useValidateToken } from "@/_hooks/auth/useValidateToken";
+import { useAuthStore } from "@/_store";
 
 const data = {
   user: {
@@ -50,7 +50,7 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useValidateToken();
+  const user = useAuthStore((store) => store.user);
 
   if (!user) {
     return null;
