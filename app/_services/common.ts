@@ -1,1 +1,7 @@
-export const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
+import { config } from "@/_config";
+
+export const BASE_API_URL = config?.server;
+export const cookieEnvSettings = {
+  domain: config?.domain,
+  secure: config?.cookieSecure,
+};

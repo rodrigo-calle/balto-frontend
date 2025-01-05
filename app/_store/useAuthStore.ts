@@ -6,6 +6,7 @@ import { UserWithToken } from "@/_types";
 import { setCookie, removeCookie, getCookie } from "typescript-cookie";
 import { addHours } from "date-fns";
 import { isAuthorized } from "@/_services/auth";
+import { cookieEnvSettings } from "@/_services/common";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,8 +34,8 @@ export const useAuthStore = create<AuthState>()(
       login: async (user: UserWithToken) => {
         try {
           setCookie("auth_token", user.token, {
-            domain: "balto-frontend-lyart.vercel.app",
-            secure: true,
+            domain: cookieEnvSettings.domain,
+            secure: cookieEnvSettings.secure,
             sameSite: "lax",
             path: "/",
             expires: addHours(new Date(), 24),
@@ -52,8 +53,8 @@ export const useAuthStore = create<AuthState>()(
       },
       logout: () => {
         removeCookie("auth_token", {
-          domain: "balto-frontend-lyart.vercel.app",
-          secure: true,
+          domain: cookieEnvSettings.domain,
+          secure: cookieEnvSettings.secure,
           sameSite: "lax",
           path: "/",
         });
