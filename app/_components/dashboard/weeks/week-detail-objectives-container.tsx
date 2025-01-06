@@ -36,7 +36,7 @@ export default function WeekDetailCardObjectives(props: Props) {
         </ul>
       </CardContent>
       <CardFooter>
-        <WeekleGoalDialogForm weekId={week.id} />
+        <WeekleGoalDialogForm />
       </CardFooter>
     </Card>
   );

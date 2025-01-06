@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,21 +22,20 @@ import {
   FormMessage,
 } from "@/_components/ui/form";
 import { useCreateWeekleObjective } from "@/_hooks/weekleObjectives/useCreateWeekleObjective";
-
-type Props = {
-  weekId: string;
-};
+import { useParams } from "next/navigation";
 
 const newWeekleGoalSchema = z.object({
   weekId: z.string().min(1, { message: "Week is required" }),
   objective: z.string().min(1, { message: "Objective is required" }),
 });
 
-export default function WeekleGoalDialogForm(props: Props) {
-  const { weekId } = props;
+export default function WeekleGoalDialogForm() {
+  const params = useParams();
+  const weekId = typeof params.weekId === "string" ? params.weekId : "";
+
   const form = useForm<z.infer<typeof newWeekleGoalSchema>>({
     defaultValues: {
-      weekId: weekId,
+      weekId,
       objective: "",
     },
     resolver: ZodResolver(newWeekleGoalSchema),
