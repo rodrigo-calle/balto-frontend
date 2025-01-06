@@ -32,7 +32,6 @@ export const config = {
     "/dashboard/:path*",
     "/dashboard/goals/:id*",
     "/dashboard/goals/:id/weeks/:weekId*",
-    "/profile/:path*",
     "/",
   ],
 };

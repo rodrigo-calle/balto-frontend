@@ -73,6 +73,8 @@ export const useAuthStore = create<AuthState>()(
           const user = await isAuthorized(token!);
 
           set({ token: user.token });
+          set({ isAuthenticated: true });
+          set({ user: user });
         } catch (error) {
           console.error("Error refreshing token:", error);
           useAuthStore.getState().logout();
