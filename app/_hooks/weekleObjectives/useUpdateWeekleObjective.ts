@@ -22,8 +22,9 @@ export function useUpdateWeekleObjective() {
       if (!token) return Promise.reject(new Error("User not logged in"));
       return updateWeekleObjective(weekleObjectiveId, weekleObjective, token);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["weekleObjectives"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["weekleObjectives"] });
+      await queryClient.refetchQueries();
     },
     onError: (error: Error) => {
       console.error("Error updating weekle objective:", error);

@@ -14,8 +14,9 @@ export function useCreateWeekleObjective() {
       if (!token) return Promise.reject(new Error("User not logged in"));
       return createWeekleObjectives(newWeekleObjective, token);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["weekleObjectives"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["weekleObjectives"] });
+      await queryClient.refetchQueries();
     },
     onError: (error: Error) => {
       console.error("Error creating weekle objective:", error);

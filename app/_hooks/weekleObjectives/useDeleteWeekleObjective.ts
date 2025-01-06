@@ -13,8 +13,9 @@ export function useDeleteWeekleObjective() {
       if (!token) return Promise.reject(new Error("User not logged in"));
       return deleteWeekleObjective(weekleObjectiveId, token);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["weekleObjectives"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["weekleObjectives"] });
+      await queryClient.refetchQueries();
     },
     onError: (error: Error) => {
       console.error("Error deleting weekle objective:", error);

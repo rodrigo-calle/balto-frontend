@@ -7,6 +7,7 @@ export type DailyEntryObjectives = {
 };
 
 export type NewDailyEntryGoal = Omit<DailyEntryObjectives, "id">;
+export type UpdateDailyEntryGoal = Partial<NewDailyEntryGoal>;
 
 export type DailyEntry = {
   id: string;

@@ -15,8 +15,9 @@ export function useCreateGoal() {
     unknown
   >({
     mutationFn: (newGoal) => createGoal(newGoal.goal, token!),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["goals"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["goals"] });
+      await queryClient.refetchQueries();
     },
     onError: (error: Error) => {
       console.error("Error creating goal:", error);

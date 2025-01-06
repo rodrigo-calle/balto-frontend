@@ -14,8 +14,9 @@ export function useCreateDailyEntry() {
       if (!token) return Promise.reject(new Error("User not logged in"));
       return createDailyEntry(newDailyEntry, token);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["dailyEntries"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["dailyEntries"] });
+      await queryClient.refetchQueries();
     },
     onError: (error: Error) => {
       console.error("Error creating daily entry:", error);

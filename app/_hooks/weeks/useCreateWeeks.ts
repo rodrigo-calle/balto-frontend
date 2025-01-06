@@ -7,8 +7,9 @@ export function useCreateWeeks() {
 
   return useMutation<Week, Error, NewWeek, unknown>({
     mutationFn: (newWeek) => createWeek(newWeek),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["weeks"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["weeks"] });
+      await queryClient.refetchQueries();
     },
     onError: (error: Error) => {
       console.error("Error creating week:", error);
