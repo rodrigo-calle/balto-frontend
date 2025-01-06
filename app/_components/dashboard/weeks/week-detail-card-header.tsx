@@ -14,7 +14,9 @@ export function WeekDetailCardHeader(prop: Props) {
     <Card>
       <CardHeader>
         <h1 className="text-2xl font-bold">Week: {week?.description}</h1>
-        <h2 className="text-lg">Belong to the goal: {goalTitle}</h2>
+        <h2 className="text-lg">
+          Belong to the goal: <span className="font-bold">{goalTitle}</span>
+        </h2>
       </CardHeader>
       <CardContent>
         <p className="text-base text-muted-foreground">

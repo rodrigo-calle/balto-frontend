@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { Calendar } from "@/_components/ui/calendar";
 import { useAuthStore } from "@/_store";
+import { useRouter } from "next/navigation";
 
 const newGoalSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
@@ -33,6 +34,7 @@ const newGoalSchema = z.object({
 });
 
 export default function NewGoal() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof newGoalSchema>>({
     defaultValues: {
       title: "",
@@ -61,7 +63,7 @@ export default function NewGoal() {
       {
         onSuccess: () => {
           form.reset();
-          alert("Goal created successfully");
+          router.push("/dashboard/goals");
         },
       }
     );

@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/_components/ui/button";
 import {
   Card,
@@ -8,14 +9,34 @@ import {
 import { Separator } from "@/_components/ui/separator";
 import { Week } from "@/_types";
 import { format } from "date-fns";
-import Link from "next/link";
-import AddDailyGoalDialog from "../daily/dialogForm/addDailyGoalDialog";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import DailyEntryContent from "../daily/dailyEntry/dailyEntryContent";
 
 type Props = {
   week: Week;
+  refetch: () => void;
 };
 export default function WeekDetailDailyEntries(props: Props) {
-  const { week } = props;
+  const { week, refetch } = props;
+  const [openDialog, setOpenDialog] = useState(false);
+  const router = useRouter();
+  const [isCurrentDateAvailable, setIsCurrentDateAvailable] = useState(false);
+  useEffect(() => {
+    const today = new Date();
+    const isAvailable = week?.DailyEntry?.some(
+      (daily) => format(daily.date, "PP") === format(today, "PP")
+    );
+    setIsCurrentDateAvailable(!isAvailable);
+  }, [week.DailyEntry]);
+
+  // TODO: Fix reftech
+  useEffect(() => {
+    refetch();
+    console.log("test");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openDialog]);
+
   return (
     <Card>
       <CardHeader>
@@ -26,35 +47,31 @@ export default function WeekDetailDailyEntries(props: Props) {
         {week.DailyEntry.length === 0 && <p>No Daily Entries Registered</p>}
         <div className="flex-col gap-4 flex">
           {week.DailyEntry.map((daily) => (
-            <div key={daily.id} className="rounded-md border p-4 flex flex-col">
-              <p className="font-bold">Date {format(daily.date, "PP")}</p>
-              <Separator />
-              <div className="flex flex-row items-center justify-between mt-2">
-                <p className="font-bold mt-2">Daily Goals:</p>
-                <AddDailyGoalDialog dailyEntryId={daily.id} />
-              </div>
-              <div>
-                {daily.DailyEntryObjectives.map((dailyGoal, index) => (
-                  <div
-                    className=" flex items-center space-x-4 rounded-md border p-4"
-                    key={index}
-                  >
-                    <p key={dailyGoal.id}>Goal:{dailyGoal.objective}</p>
-                    <p>Daily Goal description: {dailyGoal.description} </p>
-                    <p>Completed: {dailyGoal.isCompleted}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <DailyEntryContent
+              key={daily.id}
+              dailyEntry={daily}
+              isOpen={openDialog}
+              setOpenDialog={setOpenDialog}
+            />
           ))}
         </div>
       </CardContent>
       <CardFooter>
-        <Link
-          href={`/dashboard/goals/${week.goalId}/weeks/${week.id}/daily/new`}
-        >
-          <Button>Register your daily entry</Button>
-        </Link>
+        <div className="flex flex-col items-start justify-between">
+          <Button
+            onClick={() =>
+              router.push(
+                `/dashboard/goals/${week.goalId}/weeks/${week.id}/daily/new`
+              )
+            }
+            disabled={!isCurrentDateAvailable}
+          >
+            Register your daily entry
+          </Button>
+          {!isCurrentDateAvailable && (
+            <p className="text-red-500 text-sm">Already registered for today</p>
+          )}
+        </div>
       </CardFooter>
     </Card>
   );

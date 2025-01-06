@@ -17,18 +17,20 @@ export default function WeekPage() {
     error,
     isError,
     isLoading,
+    refetch,
   } = useGetWeek(user?.token ?? "", weekId);
   const {
     data: goal,
     error: goalError,
     isError: goalIsError,
+    isLoading: goalIsLoading,
   } = useGetGoal(week?.goalId ?? "");
 
   if (error || isError || !week || goalError || goalIsError || !goal) {
     return <div>{`${error}`}</div>;
   }
 
-  if (isLoading) {
+  if (isLoading || goalIsLoading) {
     return <div>Loading...</div>;
   }
 
@@ -36,7 +38,7 @@ export default function WeekPage() {
     <>
       <WeekDetailCardHeader week={week} goalTitle={goal.title} />
       <WeekDetailCardObjectives week={week} />
-      <WeekDetailDailyEntries week={week} />
+      <WeekDetailDailyEntries week={week} refetch={refetch} />
     </>
   );
 }

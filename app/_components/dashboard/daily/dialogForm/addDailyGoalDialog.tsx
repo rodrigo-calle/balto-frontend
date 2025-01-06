@@ -1,3 +1,4 @@
+"use client";
 import { useCreateDailyObjectives } from "@/_hooks/dailyEntryGoals/useCreateDailyObjectives";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -11,18 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
-type Props = {
-  dailyEntryId: string;
-};
-
-const newDailyEntryGoalSchema = z.object({
-  dailyEntryId: z.string().min(1, { message: "Daily entry is required" }),
-  objective: z.string().min(1, { message: "Objective is required" }),
-  isCompleted: z.boolean().default(false),
-  description: z.string().optional(),
-});
-
 import {
   Form,
   FormControl,
@@ -34,8 +23,21 @@ import {
 } from "@/_components/ui/form";
 import { Input } from "@/_components/ui/input";
 
+type Props = {
+  dailyEntryId: string;
+  isOpen: boolean;
+  setOpenDialog: (isOpen: boolean) => void;
+};
+
+const newDailyEntryGoalSchema = z.object({
+  dailyEntryId: z.string().min(1, { message: "Daily entry is required" }),
+  objective: z.string().min(1, { message: "Objective is required" }),
+  isCompleted: z.boolean().default(false),
+  description: z.string().optional(),
+});
+
 export default function AddDailyGoalDialog(props: Props) {
-  const { dailyEntryId } = props;
+  const { dailyEntryId, isOpen, setOpenDialog } = props;
   const form = useForm<z.infer<typeof newDailyEntryGoalSchema>>({
     defaultValues: {
       dailyEntryId,
@@ -57,10 +59,12 @@ export default function AddDailyGoalDialog(props: Props) {
 
   const onSubmit = (data: z.infer<typeof newDailyEntryGoalSchema>) => {
     createDailyEntryGoal({ ...data, description: data.description ?? "" });
+    setOpenDialog(false);
+    form.reset();
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
         <Button>Add a Daily Goal</Button>
       </DialogTrigger>
@@ -78,7 +82,7 @@ export default function AddDailyGoalDialog(props: Props) {
               name="objective"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Weekle Goal</FormLabel>
+                  <FormLabel>Add Daily Goal for this day</FormLabel>
                   <FormControl>
                     <Input placeholder="Goal Name..." {...field} />
                   </FormControl>

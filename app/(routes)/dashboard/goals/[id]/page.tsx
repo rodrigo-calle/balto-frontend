@@ -21,7 +21,7 @@ export default function Goals() {
     <div key={data.id} className="flex flex-col gap-5">
       <GoalDetailCard goal={data} />
       <div className="flex flex-row flex-wrap justify-between gap-6">
-        {data.weeks.map((week, index) => (
+        {data?.weeks?.map((week, index) => (
           <WeekCard key={String(index)} week={week} />
         ))}
       </div>

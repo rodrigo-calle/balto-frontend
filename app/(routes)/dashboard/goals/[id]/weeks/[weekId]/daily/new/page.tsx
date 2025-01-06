@@ -30,12 +30,7 @@ export default function NewDailyEntryPage() {
   const router = useRouter();
   const weekId = typeof params.weekId === "string" ? params.weekId : "";
 
-  const {
-    mutate: createDailyEntry,
-    error,
-    isError,
-    data: dailyEntrySaved,
-  } = useCreateDailyEntry();
+  const { mutate: createDailyEntry, error, isError } = useCreateDailyEntry();
 
   const form = useForm<z.infer<typeof newEntrySchema>>({
     defaultValues: {
@@ -53,9 +48,7 @@ export default function NewDailyEntryPage() {
 
   const onSubmit = (data: z.infer<typeof newEntrySchema>) => {
     createDailyEntry(data);
-    if (dailyEntrySaved) {
-      router.back();
-    }
+    router.push(`/dashboard/goals/${weekId}/weeks/${data.weekId}`);
   };
 
   return (
