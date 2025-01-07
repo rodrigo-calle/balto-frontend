@@ -5,20 +5,12 @@ import WeekDetailDailyEntries from "@/_components/dashboard/weeks/week-detail-da
 import WeekDetailCardObjectives from "@/_components/dashboard/weeks/week-detail-objectives-container";
 import { useGetGoal } from "@/_hooks/goals/useGetGoal";
 import { useGetWeek } from "@/_hooks/weeks/useGetWeek";
-import { useAuthStore } from "@/_store";
 import { useParams } from "next/navigation";
 
 export default function WeekPage() {
   const up = useParams();
-  const user = useAuthStore((state) => state.user);
   const weekId = typeof up.weekId === "string" ? up.weekId : "";
-  const {
-    data: week,
-    error,
-    isError,
-    isLoading,
-    refetch,
-  } = useGetWeek(user?.token ?? "", weekId);
+  const { data: week, error, isError, isLoading, refetch } = useGetWeek(weekId);
   const {
     data: goal,
     error: goalError,

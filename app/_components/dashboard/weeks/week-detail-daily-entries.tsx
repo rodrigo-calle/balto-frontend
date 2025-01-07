@@ -64,7 +64,6 @@ export default function WeekDetailDailyEntries(props: Props) {
                 `/dashboard/goals/${week.goalId}/weeks/${week.id}/daily/new`
               )
             }
-            disabled={!isCurrentDateAvailable}
           >
             Register your daily entry
           </Button>
